@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/cipher_vote
+    username: cipher_vote
+    password: cipher_vote
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      #???????????
+      ddl-auto: update
+    #?????SQL
+    show-sql: true
+    database: mysql
