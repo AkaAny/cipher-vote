@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vote</title>
+</head>
+<body>
+<div>
+    <button onclick="newIdentityFile()">新建用户</button>
+    <div>
+        <input type="file" id="inputIdentityFile"></input>
+        <button onclick="uploadIdentityFile()">上传用户文件</button>
+    </div>
+    <div id="divIdentityData">
+
+    </div>
+    <button onclick="downloadIdentityFile()">保存身份文件</button>
+</div>
+<div>
+    voteID:<input id="inputVoteID"></input>
+    optionID:<input id="inputOptionID"></input>
+    <button onclick="vote()">投票</button>
+</div>
+<div>
+    <button onclick="refreshVoteSummary()">刷新</button>
+    <div id="divSummary">
+
+    </div>
+</div>
+<script>
+    function getLocalServiceUrl(path) {
+        const host = "http://localhost:8080"
+        return host + path
+    }
+
+    function newIdentityFile() {
+        fetch(getLocalServiceUrl("/vote/newUser"), {
+            method:"POST",
+        })
+            .then((resp) => {
+                if (resp.status !== 200) {
+                    throw "internal server error";
+                }
+                return resp.json()
+            }).then((dataObj) => {
+            const identityData = JSON.stringify(dataObj)
+            storeToLocalStorage(identityData)
+            showIdentityData(identityData)
+        })
+    }
+
+    function makeDownload(fileName, content) {
+        const virtualLinkDOM = document.createElement('a');
+        virtualLinkDOM.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
+        virtualLinkDOM.setAttribute('download', `${fileName}`);
+        if (document.createEvent) {
+            const event = document.createEvent('MouseEvents');
+            event.initEvent('click', true, true);
+            virtualLinkDOM.dispatchEvent(event);
+        } else {
+            virtualLinkDOM.click();
+        }
+    }
+
+    function downloadIdentityFile() {
+        const identityData = getFromLocalStorage()
+        if (!identityData) {
+            alert("需要先上传身份文件")
+            return
+        }
+        makeDownload("vote_identity.json", identityData)
+    }
+
+    function uploadIdentityFile() {
+        const inputDOM = document.getElementById('inputIdentityFile')
+        if (!inputDOM.value) {
+            alert("文件不能为空")
+            return
+        }
+        const inputFile = inputDOM.files[0]
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const content = String(e.target.result)
+            storeToLocalStorage(content)
+            showIdentityData(content)
+            alert('上传成功')
+        }
+        reader.readAsText(inputFile)
+    }
+
+    function showIdentityData(content) {
+        const identityObj = JSON.parse(content)
+        const divDOM = document.getElementById('divIdentityData')
+        divDOM.innerText = JSON.stringify(identityObj, null, "\t")
+    }
+
+    function storeToLocalStorage(content) {
+        localStorage.setItem("identity_data", content)
+    }
+
+    function getFromLocalStorage() {
+        const identityData = localStorage.getItem("identity_data")
+        return identityData
+    }
+
+    function getIntValueFromInput(domID){
+        const inputDOM=document.getElementById(domID)
+        const value= parseInt(inputDOM.value,10)
+        return value
+    }
+
+    function vote(){
+       const optionID=getIntValueFromInput('inputOptionID')
+        const bodyObj={
+            userModel:JSON.parse(getFromLocalStorage()),
+            optionID:optionID,
+        }
+
+        fetch(getLocalServiceUrl("/vote/vote"),{
+            method:"PUT",
+            body:JSON.stringify(bodyObj),
+        }).then((resp)=>{
+            if(resp.status===200){
+                alert("投票成功")
+            }
+            const voteID=getIntValueFromInput('inputVoteID')
+            showVoteSummary(voteID)
+        })
+    }
+
+    function showVoteSummary(voteID){
+        fetch(getLocalServiceUrl(`/vote/summary?voteID=${voteID}`),{
+            method:"GET",
+        }).then((resp)=>{
+            return resp.json()
+        }).then((bodyObj)=>{
+            const containerDOM=document.getElementById('divSummary')
+            for (let i = 0; i < containerDOM.children.length; i++) {
+                containerDOM.removeChild(containerDOM.children[i])
+            }
+            const optionNumberMap=bodyObj.optionNumberMap
+            Object.keys(optionNumberMap).forEach((optionID)=>{
+                const optionItemDOM=document.createElement('p')
+                const text=`${optionID}: ${optionNumberMap[optionID]}`
+                optionItemDOM.innerText=text
+                containerDOM.appendChild(optionItemDOM)
+            })
+        })
+    }
+
+    function refreshVoteSummary(){
+        const voteID= getIntValueFromInput('inputVoteID')
+        showVoteSummary(voteID)
+    }
+</script>
+</body>
+</html>
