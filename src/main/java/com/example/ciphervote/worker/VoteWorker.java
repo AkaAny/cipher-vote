@@ -37,10 +37,10 @@ public class VoteWorker {
             paillier.setPublicKey(n);
             BigInteger oneBI = paillier.Encryption(new BigInteger("1", 10));
             BigInteger cipherBI = new BigInteger(cipher);
-            paillier.cipher_add(cipherBI, oneBI);
+            cipherBI= paillier.cipher_add(cipherBI, oneBI);
             cipher = cipherBI.toByteArray();
         }
-        Block block=new Block(lastBlock,userModel.sigPublicKey, userModel.sigPrivateKey,cipher);
+        Block block=new Block(lastBlock,cipher,userModel.sigPublicKey, userModel.sigPrivateKey);
         return block;
     }
 
