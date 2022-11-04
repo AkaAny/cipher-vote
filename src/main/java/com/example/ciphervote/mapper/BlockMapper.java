@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface BlockMapper extends JpaRepository<Block,String> {
     @Query("FROM Block b WHERE b.optionID=:optionID ORDER BY b.createdAt DESC")
-    Block getLatestByOptionID(Long optionID);
+    List<Block> getLatestByOptionID(Long optionID);
 
     List<Block> getByOptionID(Long optionID);
 }

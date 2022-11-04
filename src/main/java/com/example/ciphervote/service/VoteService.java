@@ -33,7 +33,7 @@ public class VoteService extends VoteWorker {
 
     public void voteLocked(UserModel userModel,Long optionID) throws Throwable {
         //TODO: 连接同一个数据库（统一账本），需要分布式锁
-        Block lastBlock= blockMapper.getLatestByOptionID(optionID);
+        Block lastBlock= blockMapper.getLatestByOptionID(optionID).stream().findFirst().orElse(null);
         Block block=null;
         if(lastBlock==null){
             block=newVoteBlock(userModel, optionID);
