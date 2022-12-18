@@ -1,6 +1,6 @@
 package com.example.ciphervote.service;
 
-import com.example.ciphervote.Block;
+import com.example.ciphervote.entity.Block;
 import com.example.ciphervote.entity.VoteOption;
 import com.example.ciphervote.mapper.BlockMapper;
 import com.example.ciphervote.mapper.VoteOptionMapper;
@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.function.ToIntFunction;
 
 @Service
 public class VoteService extends VoteWorker {

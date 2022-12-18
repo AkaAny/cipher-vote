@@ -1,9 +1,8 @@
 package com.example.ciphervote.mapper;
 
-import com.example.ciphervote.Block;
+import com.example.ciphervote.entity.Block;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
 import java.util.List;
 

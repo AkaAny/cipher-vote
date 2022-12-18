@@ -1,21 +1,14 @@
 package com.example.ciphervote.worker;
 
-import com.example.ciphervote.Block;
+import com.example.ciphervote.entity.Block;
 import com.example.ciphervote.algorithm.Paillier;
-import com.example.ciphervote.model.SignaturePresentCounter;
 import com.example.ciphervote.model.UserModel;
-import com.example.ciphervote.utils.MerkleTree;
 
 import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-import java.security.spec.KeySpec;
-import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class VoteWorker {
     public Block newVoteBlock(UserModel userModel,Long optionID) throws Throwable {

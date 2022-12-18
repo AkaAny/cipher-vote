@@ -1,24 +1,13 @@
-package com.example.ciphervote;
+package com.example.ciphervote.entity;
 
-import com.example.ciphervote.algorithm.Paillier;
-import com.example.ciphervote.entity.VoteOption;
-import com.example.ciphervote.model.UserModel;
 import com.example.ciphervote.utils.SignatureUtils;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.security.*;
-import java.security.spec.KeySpec;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
-import java.util.List;
 import java.util.UUID;
-import java.util.function.Predicate;
 
 @Entity
 @Table(name = "block")
